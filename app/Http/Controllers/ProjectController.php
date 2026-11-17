@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\User;
 
 class ProjectController extends Controller
 {
@@ -50,11 +51,33 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+public function show(string $id)
 {
     $project = Project::findOrFail($id);
 
-    return view('projects.show', compact('project'));
+    $users = User::all();
+
+    $participants = $project->participants;
+
+    return view('projects.show', compact('project', 'users', 'participants'));
+}
+
+public function assignUser(Request $request, string $id)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'role' => 'required|string',
+        'contribution_hours' => 'required|numeric|min:0'
+    ]);
+
+    $project = Project::findOrFail($id);
+
+    $project->participants()->attach($request->user_id, [
+        'role' => $request->role,
+        'contribution_hours' => $request->contribution_hours
+    ]);
+
+    return redirect()->route('projects.show', $id);
 }
 
     /**

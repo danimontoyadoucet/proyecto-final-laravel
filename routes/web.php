@@ -20,6 +20,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('projects', ProjectController::class);
+
+    Route::post('/projects/{id}/assign-user', [ProjectController::class, 'assignUser'])
+    ->name('projects.assignUser');
 });
 
 require __DIR__.'/auth.php';
