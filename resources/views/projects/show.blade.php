@@ -1,70 +1,138 @@
 
+
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>Detalles del proyecto</h1>
+<div class="container mx-auto px-4 py-8">
 
-        <h2>{{ $project->title }}</h2>
+    <div class="max-w-2xl mx-auto">
 
-        <p>
-            <strong>Descripción:</strong>
-            {{ $project->description }}
-        </p>
+        <!-- Información del proyecto -->
+        <div class="bg-white p-8 rounded-lg shadow mb-6">
 
-        <p>
-            <strong>Fecha límite:</strong>
-            {{ $project->due_date }}
-        </p>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">
+                Detalles del proyecto
+            </h1>
 
-        <p>
-            <strong>Estado:</strong>
-            {{ $project->status }}
-        </p>
+            <h2 class="text-xl font-bold text-gray-800 mb-3">
+                {{ $project->title }}
+            </h2>
 
-        <h2>Asignar usuarios al proyecto</h2>
+            <p class="text-gray-600 mb-4">
+                <strong>Descripción:</strong>
+                {{ $project->description }}
+            </p>
 
-        <form action="{{ route('projects.assignUser', $project->id) }}" method="POST">
-            @csrf
+            <p class="text-gray-600 mb-2">
+                <strong>Fecha límite:</strong>
+                {{ $project->due_date }}
+            </p>
 
-            <div>
-                <label>Usuario:</label>
-                <select name="user_id">
-                    @foreach ($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
+            <p class="text-gray-600 mb-6">
+                <strong>Estado:</strong>
+                {{ $project->status }}
+            </p>
+
+            <div class="flex gap-3">
+
+                <a href="{{ route('projects.edit', $project->id) }}"
+                   class="inline-block bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                    Editar proyecto
+                </a>
+
+                <a href="{{ route('projects.index') }}"
+                   class="inline-block bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Volver al listado
+                </a>
+
             </div>
 
-            <div>
-                <label>Rol:</label>
-                <input type="text" name="role">
-            </div>
+        </div>
 
-            <div>
-                <label>Horas de contribución:</label>
-                <input type="number" name="contribution_hours" min="0" step="0.01">
-            </div>
+        <!-- Asignar usuarios -->
+        <div class="bg-white p-8 rounded-lg shadow mb-6">
 
-            <button type="submit">Asignar usuario</button>
-        </form>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                Asignar usuarios al proyecto
+            </h2>
 
-        <a href="{{ route('projects.edit', $project->id) }}">
-            Editar proyecto
-        </a>
+            <form action="{{ route('projects.assignUser', $project->id) }}" method="POST">
+                @csrf
 
-        <a href="{{ route('projects.index') }}">
-            Volver al listado
-        </a>
+                <div class="mb-5">
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Usuario:
+                    </label>
 
-        <h2>Participantes del proyecto</h2>
+                    <select name="user_id"
+                            class="w-full border border-gray-300 rounded px-3 py-2">
+                        @foreach ($users as $user)
+                            <option value="{{ $user->id }}">
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-@foreach ($participants as $participant)
-    <div>
-        <p><strong>Nombre:</strong> {{ $participant->name }}</p>
-        <p><strong>Rol:</strong> {{ $participant->pivot->role }}</p>
-        <p><strong>Horas de contribución:</strong> {{ $participant->pivot->contribution_hours }}</p>
+                <div class="mb-5">
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Rol:
+                    </label>
+
+                    <input type="text" name="role"
+                           class="w-full border border-gray-300 rounded px-3 py-2">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Horas de contribución:
+                    </label>
+
+                    <input type="number" name="contribution_hours" min="0" step="0.01"
+                           class="w-full border border-gray-300 rounded px-3 py-2">
+                </div>
+
+                <button type="submit"
+                        class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
+                    Asignar usuario
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Participantes -->
+        <div class="bg-white p-8 rounded-lg shadow">
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                Participantes del proyecto
+            </h2>
+
+            @foreach ($participants as $participant)
+
+                <div class="border border-gray-200 rounded p-4 mb-3">
+
+                    <p class="text-gray-800 mb-2">
+                        <strong>Nombre:</strong> {{ $participant->name }}
+                    </p>
+
+                    <p class="text-gray-600 mb-2">
+                        <strong>Rol:</strong> {{ $participant->pivot->role }}
+                    </p>
+
+                    <p class="text-gray-600">
+                        <strong>Horas de contribución:</strong>
+                        {{ $participant->pivot->contribution_hours }}
+                    </p>
+
+                </div>
+
+            @endforeach
+
+        </div>
+
     </div>
-@endforeach
-    </div>
+
+</div>
 @endsection
+
